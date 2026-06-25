@@ -39,12 +39,27 @@ def generate_launch_description():
     )
 
     frame_id_arg = DeclareLaunchArgument(
-        "frame_id", default_value="map", description="World / map frame"
+        "frame_id",
+        default_value="map",
+        description="World / map frame"
     )
+
     pc_topic_arg = DeclareLaunchArgument(
         "pc_topic",
         default_value="/camera/depth/points",
         description="PointCloud2 topic to feed the skeletonizer",
+    )
+
+    publish_slices_arg = DeclareLaunchArgument(
+        "publish_slices",
+        default_value="true",
+        description="Whether to publish ESDF/TSDF slices",
+    )
+
+    publish_esdf_map_arg = DeclareLaunchArgument(
+        "publish_esdf_map",
+        default_value="false",
+        description="Whether to publish ESDF map messages",
     )
 
     # --- Derived paths (voxblox_path, output_path, sparse_graph_path) ---
@@ -66,6 +81,11 @@ def generate_launch_description():
             LaunchConfiguration("sparse_graph_name"),
         ]
     )
+
+    publish_slices = LaunchConfiguration("publish_slices")
+    publish_esdf_map = LaunchConfiguration("publish_esdf_map")
+    frame_id = LaunchConfiguration("frame_id")
+    pc_topic = LaunchConfiguration("pc_topic")
 
     # --- Voxblox skeletonizer node ---
     skeletonizer_node = Node(
@@ -105,7 +125,8 @@ def generate_launch_description():
                 "max_block_distance_from_body": 100.0,
                 "generate_by_layer_neighbors": False,
                 "slice_level": 1.0,
-                "publish_slices": True,
+                "publish_slices": publish_slices,
+                "publish_esdf_map": publish_esdf_map,
             }
         ],
     )
@@ -130,6 +151,8 @@ def generate_launch_description():
             sparse_graph_name_arg,
             frame_id_arg,
             pc_topic_arg,
+            publish_slices_arg,
+            publish_esdf_map_arg,
             skeletonizer_node,
             static_tf_node,
         ]
