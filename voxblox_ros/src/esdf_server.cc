@@ -221,6 +221,7 @@ void EsdfServer::publishTraversable()
 
 void EsdfServer::publishMap(bool reset_remote_map)
 {
+    /* This is controlled from the ros parameter launch file. */
     if (!publish_esdf_map_)
     {
         return;
