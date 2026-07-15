@@ -178,8 +178,7 @@ void SkeletonizerNode::skeletonize(Layer<EsdfVoxel>    *esdf_layer,
 {
     skeleton_generator_.setEsdfLayer(esdf_layer);
 
-    FloatingPoint min_separation_angle =
-        skeleton_generator_.getMinSeparationAngle();
+    float min_separation_angle = skeleton_generator_.getMinSeparationAngle();
 
     if (!node_ptr_->has_parameter("min_separation_angle"))
     {
@@ -218,7 +217,7 @@ void SkeletonizerNode::skeletonize(Layer<EsdfVoxel>    *esdf_layer,
 
     skeleton_generator_.setNumNeighborsForEdge(num_neighbors_for_edge);
 
-    FloatingPoint min_gvd_distance = skeleton_generator_.getMinGvdDistance();
+    float min_gvd_distance = skeleton_generator_.getMinGvdDistance();
     if (!node_ptr_->has_parameter("min_gvd_distance"))
     {
         node_ptr_->declare_parameter("min_gvd_distance", min_gvd_distance);

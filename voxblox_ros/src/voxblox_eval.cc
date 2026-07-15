@@ -232,9 +232,9 @@ void VoxbloxEvaluator::evaluate()
     {
         Point point(it->x, it->y, it->z);
 
-        FloatingPoint distance = 0.0;
-        float         weight   = 0.0;
-        bool          valid    = false;
+        float distance = 0.0;
+        float weight   = 0.0;
+        bool  valid    = false;
 
         const float min_weight  = 0.01;
         const bool  interpolate = true;

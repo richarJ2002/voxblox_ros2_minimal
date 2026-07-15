@@ -22,108 +22,130 @@
 
 #include "voxblox/io/mesh_ply.h"
 
-namespace voxblox {
+namespace voxblox
+{
 
-bool convertMeshLayerToMesh(const MeshLayer& mesh_layer, Mesh* mesh,
-                            const bool connected_mesh,
-                            const FloatingPoint vertex_proximity_threshold) {
-  CHECK_NOTNULL(mesh);
+bool convertMeshLayerToMesh(const MeshLayer &mesh_layer,
+                            Mesh            *mesh,
+                            const bool       connected_mesh,
+                            const float      vertex_proximity_threshold)
+{
+    CHECK_NOTNULL(mesh);
 
-  if (connected_mesh) {
-    mesh_layer.getConnectedMesh(mesh, vertex_proximity_threshold);
-  } else {
-    mesh_layer.getMesh(mesh);
-  }
-  return mesh->size() > 0u;
-}
-
-bool outputMeshLayerAsPly(const std::string& filename,
-                          const MeshLayer& mesh_layer) {
-  constexpr bool kConnectedMesh = true;
-  return outputMeshLayerAsPly(filename, kConnectedMesh, mesh_layer);
-}
-
-bool outputMeshLayerAsPly(const std::string& filename,
-                          const bool connected_mesh,
-                          const MeshLayer& mesh_layer) {
-  Mesh combined_mesh(mesh_layer.block_size(), Point::Zero());
-
-  if (!convertMeshLayerToMesh(mesh_layer, &combined_mesh, connected_mesh)) {
-    return false;
-  }
-
-  bool success = outputMeshAsPly(filename, combined_mesh);
-  if (!success) {
-    LOG(WARNING) << "Saving to PLY failed!";
-  }
-  return success;
-}
-
-bool outputMeshAsPly(const std::string& filename, const Mesh& mesh) {
-  std::ofstream stream(filename.c_str());
-
-  if (!stream) {
-    return false;
-  }
-
-  size_t num_points = mesh.vertices.size();
-  stream << "ply" << std::endl;
-  stream << "format ascii 1.0" << std::endl;
-  stream << "element vertex " << num_points << std::endl;
-  stream << "property float x" << std::endl;
-  stream << "property float y" << std::endl;
-  stream << "property float z" << std::endl;
-  if (mesh.hasNormals()) {
-    stream << "property float normal_x" << std::endl;
-    stream << "property float normal_y" << std::endl;
-    stream << "property float normal_z" << std::endl;
-  }
-  if (mesh.hasColors()) {
-    stream << "property uchar red" << std::endl;
-    stream << "property uchar green" << std::endl;
-    stream << "property uchar blue" << std::endl;
-    stream << "property uchar alpha" << std::endl;
-  }
-  if (mesh.hasTriangles()) {
-    stream << "element face " << mesh.indices.size() / 3 << std::endl;
-    stream << "property list uchar int vertex_indices"
-           << std::endl;  // pcl-1.7(ros::kinetic) breaks ply convention by not
-                          // using "vertex_index"
-  }
-  stream << "end_header" << std::endl;
-  size_t vert_idx = 0;
-  for (const Point& vert : mesh.vertices) {
-    stream << vert(0) << " " << vert(1) << " " << vert(2);
-
-    if (mesh.hasNormals()) {
-      const Point& normal = mesh.normals[vert_idx];
-      stream << " " << normal.x() << " " << normal.y() << " " << normal.z();
+    if (connected_mesh)
+    {
+        mesh_layer.getConnectedMesh(mesh, vertex_proximity_threshold);
     }
-    if (mesh.hasColors()) {
-      const Color& color = mesh.colors[vert_idx];
-      int r = static_cast<int>(color.r);
-      int g = static_cast<int>(color.g);
-      int b = static_cast<int>(color.b);
-      int a = static_cast<int>(color.a);
-      // Uint8 prints as character otherwise. :(
-      stream << " " << r << " " << g << " " << b << " " << a;
+    else
+    {
+        mesh_layer.getMesh(mesh);
+    }
+    return mesh->size() > 0u;
+}
+
+bool outputMeshLayerAsPly(const std::string &filename,
+                          const MeshLayer   &mesh_layer)
+{
+    constexpr bool kConnectedMesh = true;
+    return outputMeshLayerAsPly(filename, kConnectedMesh, mesh_layer);
+}
+
+bool outputMeshLayerAsPly(const std::string &filename,
+                          const bool         connected_mesh,
+                          const MeshLayer   &mesh_layer)
+{
+    Mesh combined_mesh(mesh_layer.block_size(), Point::Zero());
+
+    if (!convertMeshLayerToMesh(mesh_layer, &combined_mesh, connected_mesh))
+    {
+        return false;
     }
 
-    stream << std::endl;
-    vert_idx++;
-  }
-  if (mesh.hasTriangles()) {
-    for (size_t i = 0; i < mesh.indices.size(); i += 3) {
-      stream << "3 ";
-
-      for (int j = 0; j < 3; j++) {
-        stream << mesh.indices.at(i + j) << " ";
-      }
-
-      stream << std::endl;
+    bool success = outputMeshAsPly(filename, combined_mesh);
+    if (!success)
+    {
+        LOG(WARNING) << "Saving to PLY failed!";
     }
-  }
-  return true;
+    return success;
 }
 
-}  // namespace voxblox
+bool outputMeshAsPly(const std::string &filename, const Mesh &mesh)
+{
+    std::ofstream stream(filename.c_str());
+
+    if (!stream)
+    {
+        return false;
+    }
+
+    size_t num_points = mesh.vertices.size();
+    stream << "ply" << std::endl;
+    stream << "format ascii 1.0" << std::endl;
+    stream << "element vertex " << num_points << std::endl;
+    stream << "property float x" << std::endl;
+    stream << "property float y" << std::endl;
+    stream << "property float z" << std::endl;
+    if (mesh.hasNormals())
+    {
+        stream << "property float normal_x" << std::endl;
+        stream << "property float normal_y" << std::endl;
+        stream << "property float normal_z" << std::endl;
+    }
+    if (mesh.hasColors())
+    {
+        stream << "property uchar red" << std::endl;
+        stream << "property uchar green" << std::endl;
+        stream << "property uchar blue" << std::endl;
+        stream << "property uchar alpha" << std::endl;
+    }
+    if (mesh.hasTriangles())
+    {
+        stream << "element face " << mesh.indices.size() / 3 << std::endl;
+        stream << "property list uchar int vertex_indices"
+               << std::endl; // pcl-1.7(ros::kinetic) breaks ply convention by
+                             // not using "vertex_index"
+    }
+    stream << "end_header" << std::endl;
+    size_t vert_idx = 0;
+    for (const Point &vert : mesh.vertices)
+    {
+        stream << vert(0) << " " << vert(1) << " " << vert(2);
+
+        if (mesh.hasNormals())
+        {
+            const Point &normal = mesh.normals[vert_idx];
+            stream << " " << normal.x() << " " << normal.y() << " "
+                   << normal.z();
+        }
+        if (mesh.hasColors())
+        {
+            const Color &color = mesh.colors[vert_idx];
+            int          r     = static_cast<int>(color.r);
+            int          g     = static_cast<int>(color.g);
+            int          b     = static_cast<int>(color.b);
+            int          a     = static_cast<int>(color.a);
+            // Uint8 prints as character otherwise. :(
+            stream << " " << r << " " << g << " " << b << " " << a;
+        }
+
+        stream << std::endl;
+        vert_idx++;
+    }
+    if (mesh.hasTriangles())
+    {
+        for (size_t i = 0; i < mesh.indices.size(); i += 3)
+        {
+            stream << "3 ";
+
+            for (int j = 0; j < 3; j++)
+            {
+                stream << mesh.indices.at(i + j) << " ";
+            }
+
+            stream << std::endl;
+        }
+    }
+    return true;
+}
+
+} // namespace voxblox

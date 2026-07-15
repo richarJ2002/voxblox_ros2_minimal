@@ -28,138 +28,190 @@
 
 #include "voxblox/core/common.h"
 
-namespace voxblox {
+namespace voxblox
+{
 
 /**
  * Holds the vertex, normals, color and triangle index information of a mesh.
  */
-struct Mesh {
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+struct Mesh
+{
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  typedef std::shared_ptr<Mesh> Ptr;
-  typedef std::shared_ptr<const Mesh> ConstPtr;
+    typedef std::shared_ptr<Mesh>       Ptr;
+    typedef std::shared_ptr<const Mesh> ConstPtr;
 
-  static constexpr FloatingPoint kInvalidBlockSize = -1.0;
+    static constexpr float kInvalidBlockSize = -1.0;
 
-  Mesh()
-      : block_size(kInvalidBlockSize), origin(Point::Zero()), updated(false) {
-    // Do nothing.
-  }
-
-  Mesh(FloatingPoint _block_size, const Point& _origin)
-      : block_size(_block_size), origin(_origin), updated(false) {
-    CHECK_GT(block_size, 0.0);
-  }
-  virtual ~Mesh() {}
-
-  inline bool hasVertices() const { return !vertices.empty(); }
-  inline bool hasNormals() const { return !normals.empty(); }
-  inline bool hasColors() const { return !colors.empty(); }
-  inline bool hasTriangles() const { return !indices.empty(); }
-
-  inline size_t size() const { return vertices.size(); }
-  inline size_t getMemorySize() const {
-    size_t size_bytes = 0u;
-    size_bytes += sizeof(Pointcloud) + vertices.size() * sizeof(Point);
-    size_bytes += sizeof(Pointcloud) + normals.size() * sizeof(Point);
-    size_bytes += sizeof(Colors) + vertices.size() * sizeof(Color);
-    size_bytes +=
-        sizeof(VertexIndexList) + indices.size() * sizeof(VertexIndex);
-
-    size_bytes += sizeof(block_size);
-    size_bytes += sizeof(origin);
-    size_bytes += sizeof(updated);
-    return size_bytes;
-  }
-
-  inline void clear() {
-    vertices.clear();
-    normals.clear();
-    colors.clear();
-    indices.clear();
-  }
-
-  inline void clearTriangles() { indices.clear(); }
-  inline void clearNormals() { normals.clear(); }
-  inline void clearColors() { colors.clear(); }
-
-  inline void resize(const size_t size, const bool has_normals = true,
-                     const bool has_colors = true,
-                     const bool has_indices = true) {
-    vertices.resize(size);
-
-    if (has_normals) {
-      normals.resize(size);
+    Mesh() :
+        block_size(kInvalidBlockSize),
+        origin(Point::Zero()),
+        updated(false)
+    {
+        // Do nothing.
     }
 
-    if (has_colors) {
-      colors.resize(size);
+    Mesh(float _block_size, const Point &_origin) :
+        block_size(_block_size),
+        origin(_origin),
+        updated(false)
+    {
+        CHECK_GT(block_size, 0.0);
+    }
+    virtual ~Mesh() {}
+
+    inline bool hasVertices() const
+    {
+        return !vertices.empty();
+    }
+    inline bool hasNormals() const
+    {
+        return !normals.empty();
+    }
+    inline bool hasColors() const
+    {
+        return !colors.empty();
+    }
+    inline bool hasTriangles() const
+    {
+        return !indices.empty();
     }
 
-    if (has_indices) {
-      indices.resize(size);
+    inline size_t size() const
+    {
+        return vertices.size();
     }
-  }
+    inline size_t getMemorySize() const
+    {
+        size_t size_bytes = 0u;
+        size_bytes += sizeof(Pointcloud) + vertices.size() * sizeof(Point);
+        size_bytes += sizeof(Pointcloud) + normals.size() * sizeof(Point);
+        size_bytes += sizeof(Colors) + vertices.size() * sizeof(Color);
+        size_bytes +=
+            sizeof(VertexIndexList) + indices.size() * sizeof(VertexIndex);
 
-  inline void reserve(const size_t size, const bool has_normals = true,
-                      const bool has_colors = true,
-                      const bool has_triangles = true) {
-    vertices.reserve(size);
-
-    if (has_normals) {
-      normals.reserve(size);
+        size_bytes += sizeof(block_size);
+        size_bytes += sizeof(origin);
+        size_bytes += sizeof(updated);
+        return size_bytes;
     }
 
-    if (has_colors) {
-      colors.reserve(size);
+    inline void clear()
+    {
+        vertices.clear();
+        normals.clear();
+        colors.clear();
+        indices.clear();
     }
 
-    if (has_triangles) {
-      indices.reserve(size);
+    inline void clearTriangles()
+    {
+        indices.clear();
     }
-  }
-
-  void colorizeMesh(const Color& new_color) {
-    colors.clear();
-    colors.resize(vertices.size(), new_color);
-  }
-
-  void concatenateMesh(const Mesh& other_mesh) {
-    CHECK_EQ(other_mesh.hasColors(), hasColors());
-    CHECK_EQ(other_mesh.hasNormals(), hasNormals());
-    CHECK_EQ(other_mesh.hasTriangles(), hasTriangles());
-
-    reserve(size() + other_mesh.size(), hasNormals(), hasColors(),
-            hasTriangles());
-
-    const size_t num_vertices_before = vertices.size();
-
-    for (const Point& vertex : other_mesh.vertices) {
-      vertices.push_back(vertex);
+    inline void clearNormals()
+    {
+        normals.clear();
     }
-    for (const Color& color : other_mesh.colors) {
-      colors.push_back(color);
+    inline void clearColors()
+    {
+        colors.clear();
     }
-    for (const Point& normal : other_mesh.normals) {
-      normals.push_back(normal);
+
+    inline void resize(const size_t size,
+                       const bool   has_normals = true,
+                       const bool   has_colors  = true,
+                       const bool   has_indices = true)
+    {
+        vertices.resize(size);
+
+        if (has_normals)
+        {
+            normals.resize(size);
+        }
+
+        if (has_colors)
+        {
+            colors.resize(size);
+        }
+
+        if (has_indices)
+        {
+            indices.resize(size);
+        }
     }
-    for (const size_t index : other_mesh.indices) {
-      indices.push_back(index + num_vertices_before);
+
+    inline void reserve(const size_t size,
+                        const bool   has_normals   = true,
+                        const bool   has_colors    = true,
+                        const bool   has_triangles = true)
+    {
+        vertices.reserve(size);
+
+        if (has_normals)
+        {
+            normals.reserve(size);
+        }
+
+        if (has_colors)
+        {
+            colors.reserve(size);
+        }
+
+        if (has_triangles)
+        {
+            indices.reserve(size);
+        }
     }
-  }
 
-  Pointcloud vertices;
-  VertexIndexList indices;
-  Pointcloud normals;
-  Colors colors;
+    void colorizeMesh(const Color &new_color)
+    {
+        colors.clear();
+        colors.resize(vertices.size(), new_color);
+    }
 
-  FloatingPoint block_size;
-  Point origin;
+    void concatenateMesh(const Mesh &other_mesh)
+    {
+        CHECK_EQ(other_mesh.hasColors(), hasColors());
+        CHECK_EQ(other_mesh.hasNormals(), hasNormals());
+        CHECK_EQ(other_mesh.hasTriangles(), hasTriangles());
 
-  bool updated;
+        reserve(size() + other_mesh.size(),
+                hasNormals(),
+                hasColors(),
+                hasTriangles());
+
+        const size_t num_vertices_before = vertices.size();
+
+        for (const Point &vertex : other_mesh.vertices)
+        {
+            vertices.push_back(vertex);
+        }
+        for (const Color &color : other_mesh.colors)
+        {
+            colors.push_back(color);
+        }
+        for (const Point &normal : other_mesh.normals)
+        {
+            normals.push_back(normal);
+        }
+        for (const size_t index : other_mesh.indices)
+        {
+            indices.push_back(index + num_vertices_before);
+        }
+    }
+
+    Pointcloud      vertices;
+    VertexIndexList indices;
+    Pointcloud      normals;
+    Colors          colors;
+
+    float block_size;
+    Point origin;
+
+    bool updated;
 };
 
-}  // namespace voxblox
+} // namespace voxblox
 
-#endif  // VOXBLOX_MESH_MESH_H_
+#endif // VOXBLOX_MESH_MESH_H_
