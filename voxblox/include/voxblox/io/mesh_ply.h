@@ -29,7 +29,8 @@
 
 #include "voxblox/mesh/mesh_layer.h"
 
-namespace voxblox {
+namespace voxblox
+{
 
 /**
  * Generates a mesh from the mesh layer.
@@ -37,23 +38,24 @@ namespace voxblox {
  * @param vertex_proximity_threshold verticies that are within the specified
  * thershold distance will be merged together, simplifying the mesh.
  */
-bool convertMeshLayerToMesh(
-    const MeshLayer& mesh_layer, Mesh* mesh, const bool connected_mesh = true,
-    const FloatingPoint vertex_proximity_threshold = 1e-10);
+bool convertMeshLayerToMesh(const MeshLayer &mesh_layer,
+                            Mesh            *mesh,
+                            const bool       connected_mesh        = true,
+                            const float vertex_proximity_threshold = 1e-10);
 
 /// Default behaviour is to simplify the mesh.
-bool outputMeshLayerAsPly(const std::string& filename,
-                          const MeshLayer& mesh_layer);
+bool outputMeshLayerAsPly(const std::string &filename,
+                          const MeshLayer   &mesh_layer);
 
 /**
  * @param connected_mesh if true vertices will be shared between triangles
  */
-bool outputMeshLayerAsPly(const std::string& filename,
-                          const bool connected_mesh,
-                          const MeshLayer& mesh_layer);
+bool outputMeshLayerAsPly(const std::string &filename,
+                          const bool         connected_mesh,
+                          const MeshLayer   &mesh_layer);
 
-bool outputMeshAsPly(const std::string& filename, const Mesh& mesh);
+bool outputMeshAsPly(const std::string &filename, const Mesh &mesh);
 
-}  // namespace voxblox
+} // namespace voxblox
 
-#endif  // VOXBLOX_IO_MESH_PLY_H_
+#endif // VOXBLOX_IO_MESH_PLY_H_

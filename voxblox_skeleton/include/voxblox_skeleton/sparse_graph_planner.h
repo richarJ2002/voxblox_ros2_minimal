@@ -7,54 +7,59 @@
 #include "voxblox_skeleton/nanoflann_interface.h"
 #include "voxblox_skeleton/skeleton.h"
 
-namespace voxblox {
+namespace voxblox
+{
 
-class SparseGraphPlanner {
- public:
-  typedef nanoflann::KDTreeSingleIndexAdaptor<
-      nanoflann::L2_Simple_Adaptor<FloatingPoint,
-                                   DirectSkeletonVertexMapAdapter>,
-      DirectSkeletonVertexMapAdapter, 3>
-      VertexGraphKdTree;
+class SparseGraphPlanner
+{
+  public:
+    typedef nanoflann::KDTreeSingleIndexAdaptor<
+        nanoflann::L2_Simple_Adaptor<float, DirectSkeletonVertexMapAdapter>,
+        DirectSkeletonVertexMapAdapter,
+        3>
+        VertexGraphKdTree;
 
-  SparseGraphPlanner();
+    SparseGraphPlanner();
 
-  void setGraph(SparseSkeletonGraph* graph) {
-    CHECK_NOTNULL(graph);
-    graph_ = graph;
-  }
+    void setGraph(SparseSkeletonGraph *graph)
+    {
+        CHECK_NOTNULL(graph);
+        graph_ = graph;
+    }
 
-  // Creates the kD trees. MUST be called before the first planning iteration.
-  void setup();
+    // Creates the kD trees. MUST be called before the first planning iteration.
+    void setup();
 
-  // Creates a path from the nearest vertex to the start position to the nearest
-  // vertex to the end position. Off-graph planning is left as an exercise to
-  // the reader (hint: use skeleton_planner).
-  bool getPath(const Point& start_position, const Point& end_position,
-               AlignedVector<Point>* coordinate_path) const;
+    // Creates a path from the nearest vertex to the start position to the
+    // nearest vertex to the end position. Off-graph planning is left as an
+    // exercise to the reader (hint: use skeleton_planner).
+    bool getPath(const Point          &start_position,
+                 const Point          &end_position,
+                 AlignedVector<Point> *coordinate_path) const;
 
-  size_t getNClosestVertices(const Point& point, int num_vertices,
-                             std::vector<int64_t>* vertex_inds) const;
+    size_t getNClosestVertices(const Point          &point,
+                               int                   num_vertices,
+                               std::vector<int64_t> *vertex_inds) const;
 
-  // Gets the path between vertex IDs.
-  bool getPathBetweenVertices(int64_t start_vertex_id, int64_t end_vertex_id,
-                              std::vector<int64_t>* vertex_path) const;
+    // Gets the path between vertex IDs.
+    bool getPathBetweenVertices(int64_t               start_vertex_id,
+                                int64_t               end_vertex_id,
+                                std::vector<int64_t> *vertex_path) const;
 
- private:
-  int64_t popSmallestFromOpen(
-      const std::map<int64_t, FloatingPoint>& f_score_map,
-      std::set<int64_t>* open_set) const;
+  private:
+    int64_t popSmallestFromOpen(const std::map<int64_t, float> &f_score_map,
+                                std::set<int64_t>              *open_set) const;
 
-  void getSolutionPath(int64_t end_vertex_id,
-                       const std::map<int64_t, int64_t>& parent_map,
-                       std::vector<int64_t>* vertex_path) const;
+    void getSolutionPath(int64_t                           end_vertex_id,
+                         const std::map<int64_t, int64_t> &parent_map,
+                         std::vector<int64_t>             *vertex_path) const;
 
-  SparseSkeletonGraph* graph_;
+    SparseSkeletonGraph *graph_;
 
-  std::unique_ptr<VertexGraphKdTree> kd_tree_;
-  std::unique_ptr<DirectSkeletonVertexMapAdapter> kd_tree_adapter_;
+    std::unique_ptr<VertexGraphKdTree>              kd_tree_;
+    std::unique_ptr<DirectSkeletonVertexMapAdapter> kd_tree_adapter_;
 };
 
-}  // namespace voxblox
+} // namespace voxblox
 
-#endif  // VOXBLOX_SKELETON_SPARSE_GRAPH_PLANNER_H_
+#endif // VOXBLOX_SKELETON_SPARSE_GRAPH_PLANNER_H_

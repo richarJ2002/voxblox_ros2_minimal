@@ -10,57 +10,69 @@
 #include "voxblox/core/layer.h"
 #include "voxblox/core/voxel.h"
 
-namespace voxblox {
+namespace voxblox
+{
 /// Map holding an Occupancy Layer, inspired by Octomap.
-class OccupancyMap {
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  typedef std::shared_ptr<OccupancyMap> Ptr;
-
-  struct Config {
+class OccupancyMap
+{
+  public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    FloatingPoint occupancy_voxel_size = 0.2;
-    size_t occupancy_voxels_per_side = 16u;
-  };
+    typedef std::shared_ptr<OccupancyMap> Ptr;
 
-  explicit OccupancyMap(const Config& config)
-      : occupancy_layer_(new Layer<OccupancyVoxel>(
-            config.occupancy_voxel_size, config.occupancy_voxels_per_side)) {
-    block_size_ =
-        config.occupancy_voxel_size * config.occupancy_voxels_per_side;
-  }
+    struct Config
+    {
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  // Creates a new OccupancyMap based on a COPY of this layer.
-  explicit OccupancyMap(const Layer<OccupancyVoxel>& layer)
-      : OccupancyMap(aligned_shared<Layer<OccupancyVoxel>>(layer)) {}
+        float  occupancy_voxel_size      = 0.2;
+        size_t occupancy_voxels_per_side = 16u;
+    };
 
-  // Creates a new OccupancyMap that contains this layer.
-  explicit OccupancyMap(Layer<OccupancyVoxel>::Ptr layer)
-      : occupancy_layer_(layer) {
-    CHECK(layer);
-    block_size_ = layer->block_size();
-  }
+    explicit OccupancyMap(const Config &config) :
+        occupancy_layer_(
+            new Layer<OccupancyVoxel>(config.occupancy_voxel_size,
+                                      config.occupancy_voxels_per_side))
+    {
+        block_size_ =
+            config.occupancy_voxel_size * config.occupancy_voxels_per_side;
+    }
 
-  virtual ~OccupancyMap() {}
+    // Creates a new OccupancyMap based on a COPY of this layer.
+    explicit OccupancyMap(const Layer<OccupancyVoxel> &layer) :
+        OccupancyMap(aligned_shared<Layer<OccupancyVoxel>>(layer))
+    {}
 
-  Layer<OccupancyVoxel>* getOccupancyLayerPtr() {
-    return occupancy_layer_.get();
-  }
-  const Layer<OccupancyVoxel>& getOccupancyLayer() const {
-    return *occupancy_layer_;
-  }
+    // Creates a new OccupancyMap that contains this layer.
+    explicit OccupancyMap(Layer<OccupancyVoxel>::Ptr layer) :
+        occupancy_layer_(layer)
+    {
+        CHECK(layer);
+        block_size_ = layer->block_size();
+    }
 
-  FloatingPoint block_size() const { return block_size_; }
+    virtual ~OccupancyMap() {}
 
- protected:
-  FloatingPoint block_size_;
+    Layer<OccupancyVoxel> *getOccupancyLayerPtr()
+    {
+        return occupancy_layer_.get();
+    }
+    const Layer<OccupancyVoxel> &getOccupancyLayer() const
+    {
+        return *occupancy_layer_;
+    }
 
-  // The layers.
-  Layer<OccupancyVoxel>::Ptr occupancy_layer_;
+    float block_size() const
+    {
+        return block_size_;
+    }
+
+  protected:
+    float block_size_;
+
+    // The layers.
+    Layer<OccupancyVoxel>::Ptr occupancy_layer_;
 };
 
-}  // namespace voxblox
+} // namespace voxblox
 
-#endif  // VOXBLOX_CORE_OCCUPANCY_MAP_H_
+#endif // VOXBLOX_CORE_OCCUPANCY_MAP_H_

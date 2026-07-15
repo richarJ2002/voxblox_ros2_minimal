@@ -244,11 +244,17 @@ void EsdfServer::publishMap(bool reset_remote_map)
         {
             reset_remote_map = true;
         }
-        const bool               only_updated = !reset_remote_map;
-        timing::Timer            publish_map_timer("map/publish_esdf");
+
+        /* Start publish timer for esdf layer */
+        timing::Timer publish_map_timer("map/publish_esdf");
+
+        /* Set flag on weather to serialize only updated blocks */
+        const bool serialize_only_updated_blocks = !reset_remote_map;
+
+        /* Serialize the esdf layer */
         voxblox_msgs::msg::Layer layer_msg;
         serializeLayerAsMsg<EsdfVoxel>(this->esdf_map_->getEsdfLayer(),
-                                       only_updated,
+                                       serialize_only_updated_blocks,
                                        &layer_msg);
 
         /* Create msg to publish */

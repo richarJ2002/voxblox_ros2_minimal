@@ -43,26 +43,26 @@ class EsdfIntegrator
          *  @brief:     Maximum distance to calculate the actual distance to.
          *              Any values above this will be set to default_distance_m.
          */
-        FloatingPoint max_distance_m = 2.0;
+        float max_distance_m = 2.0;
 
         /*!
          *  @brief:     Should mirror (or be smaller than) truncation distance
          *              in tsdf integrator.
          */
-        FloatingPoint min_distance_m = 0.2;
+        float min_distance_m = 0.2;
 
         /*!
          *  @brief:     Default distance set for unknown values and when:
          *                  values > max_distance_m.
          */
-        FloatingPoint default_distance_m = 2.0;
+        float default_distance_m = 2.0;
 
         /*!
          *  @brief:     For cheaper but less accurate map updates: the minimum
          *              difference in a voxel distance, before the change is
          *              propagated.
          */
-        FloatingPoint min_diff_m = 0.001;
+        float min_diff_m = 0.001;
 
         /*!
          * @brief:      Minimum weight to consider a TSDF value seen at.
@@ -94,8 +94,8 @@ class EsdfIntegrator
          *              occupied, these are the radiuses used around each robot
          *              position.
          */
-        FloatingPoint clear_sphere_radius    = 1.5;
-        FloatingPoint occupied_sphere_radius = 5.0;
+        float clear_sphere_radius    = 1.5;
+        float occupied_sphere_radius = 5.0;
     };
 
     /*!
@@ -167,7 +167,7 @@ class EsdfIntegrator
     /*!
      * @brief:        Convenience functions.
      */
-    inline bool isFixed(FloatingPoint dist_m) const
+    inline bool isFixed(float dist_m) const
     {
         return std::abs(dist_m) < config_.min_distance_m;
     }
@@ -256,7 +256,7 @@ class EsdfIntegrator
     /*!
      * @brief:      TODO
      */
-    FloatingPoint voxel_size_;
+    float voxel_size_;
 
     /*!
      * @brief:      Index of memory blocks which keep track of what blocks of

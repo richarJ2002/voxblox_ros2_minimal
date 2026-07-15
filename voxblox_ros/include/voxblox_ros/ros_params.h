@@ -45,7 +45,7 @@ inline TsdfMap::Config getTsdfMapConfigFromRosParam(rclcpp::Node *node_ptr)
         voxels_per_side = tsdf_config.tsdf_voxels_per_side;
     }
 
-    tsdf_config.tsdf_voxel_size      = static_cast<FloatingPoint>(voxel_size);
+    tsdf_config.tsdf_voxel_size      = static_cast<float>(voxel_size);
     tsdf_config.tsdf_voxels_per_side = voxels_per_side;
 
     return tsdf_config;

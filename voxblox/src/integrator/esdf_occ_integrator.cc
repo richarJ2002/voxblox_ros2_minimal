@@ -183,8 +183,7 @@ void EsdfOccIntegrator::processOpenSet()
                 continue;
             }
 
-            const FloatingPoint distance_to_neighbor =
-                distances[i] * esdf_voxel_size_;
+            const float distance_to_neighbor = distances[i] * esdf_voxel_size_;
 
             if (!neighbor_voxel.fixed &&
                 esdf_voxel.distance + distance_to_neighbor <

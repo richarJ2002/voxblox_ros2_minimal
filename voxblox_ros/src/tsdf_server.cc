@@ -43,7 +43,7 @@ TsdfServer::TsdfServer(rclcpp::Node                     *node_ptr,
     world_frame_("world"),
     icp_corrected_frame_("icp_corrected"),
     pose_corrected_frame_("pose_corrected"),
-    max_block_distance_from_body_(std::numeric_limits<FloatingPoint>::max()),
+    max_block_distance_from_body_(std::numeric_limits<float>::max()),
     slice_level_(0.5),
     use_freespace_pointcloud_(false),
     color_map_(new RainbowColorMap()),
@@ -399,9 +399,9 @@ void TsdfServer::getServerConfigFromRosParam(rclcpp::Node *node_ptr)
     node_ptr->get_parameter("accumulate_icp_corrections",
                             accumulate_icp_corrections_);
     node_ptr->get_parameter("verbose", verbose_);
-    RCLCPP_ERROR(node_ptr_->get_logger(),
-                 "Verbose mode is %s",
-                 verbose_ ? "on" : "off");
+    RCLCPP_INFO(node_ptr_->get_logger(),
+                "Verbose mode is %s",
+                verbose_ ? "on" : "off");
     node_ptr->get_parameter("mesh_filename", mesh_filename_);
 
     // node_ptr->get_parameter("color_mode", color_mode_);
@@ -666,7 +666,7 @@ void TsdfServer::insertPointcloud(
         last_msg_time_ptcloud_.get_clock_type() != clk_type)
     {
         RCLCPP_WARN(node_ptr_->get_logger(),
-                    "TSDF Server pointcloud clock type changed or first "
+                    "TSDF Server pointcloud clock type has changed or is first "
                     "message. Resetting "
                     "last message time.");
         last_msg_time_ptcloud_ = t_msg; // <-- use t_msg (same clock)

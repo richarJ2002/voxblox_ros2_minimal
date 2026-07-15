@@ -12,10 +12,10 @@
 //       names of its contributors may be used to endorse or promote products
 //       derived from this software without specific prior written permission.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
 // DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 // (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 // LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -27,64 +27,74 @@
 
 #include "test_helper.h"
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_Equal) {
-  EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
-                                this->test_matrix_54_equal,
-                                1e-8));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_Equal)
+{
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
+                                  this->test_matrix_54_equal,
+                                  1e-8));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_EqualFloatingPoint) {
-  EXPECT_TRUE(EIGEN_MATRIX_NEAR(
-      this->ground_truth_matrix_54, this->test_matrix_54_equal_floating_point,
-      1e-9));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_Equalfloat)
+{
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
+                                  this->test_matrix_54_equal_floating_point,
+                                  1e-9));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_NonEqualRandom) {
-  EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
-                                 this->test_matrix_54_random,
-                                 1e-8));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_NonEqualRandom)
+{
+    EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
+                                   this->test_matrix_54_random,
+                                   1e-8));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_OtherSize) {
-  EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
-                                 this->test_matrix_D4,
-                                 1e-8));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_OtherSize)
+{
+    EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
+                                   this->test_matrix_D4,
+                                   1e-8));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_Near5) {
-  EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
-                                this->test_matrix_54_near_e_minus_5,
-                                1e-4));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Matrix_Near5)
+{
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_matrix_54,
+                                  this->test_matrix_54_near_e_minus_5,
+                                  1e-4));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_Equal) {
-  EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
-                                this->test_vector_5_equal,
-                                1e-8));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_Equal)
+{
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
+                                  this->test_vector_5_equal,
+                                  1e-8));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_EqualFloatingPoint) {
-  EXPECT_TRUE(EIGEN_MATRIX_NEAR(
-      this->ground_truth_vector_5, this->test_vector_5_equal_floating_point,
-      1e-9));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_Equalfloat)
+{
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
+                                  this->test_vector_5_equal_floating_point,
+                                  1e-9));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_NonEqualRandom) {
-  EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
-                                 this->test_vector_5_random,
-                                 1e-8));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_NonEqualRandom)
+{
+    EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
+                                   this->test_vector_5_random,
+                                   1e-8));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_OtherSize) {
-  EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
-                                 this->test_vector_D,
-                                 1e-8));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_OtherSize)
+{
+    EXPECT_FALSE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
+                                   this->test_vector_D,
+                                   1e-8));
 }
 
-TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_Near5) {
-  EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
-                                this->test_vector_5_near_e_minus_5,
-                                1e-4));
+TYPED_TEST(EigenChecks, EigenMatrixNearGTest_Vector_Near5)
+{
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(this->ground_truth_vector_5,
+                                  this->test_vector_5_near_e_minus_5,
+                                  1e-4));
 }
 
 UNITTEST_ENTRYPOINT
