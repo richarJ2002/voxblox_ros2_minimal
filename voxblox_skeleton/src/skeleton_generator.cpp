@@ -11,7 +11,7 @@ SkeletonGenerator::SkeletonGenerator() :
     num_neighbors_for_edge_(18),
     check_edges_on_construction_(false),
     vertex_pruning_radius_(0.35),
-    min_gvd_distance_(0.4),
+    min_gvd_distance_(0.2),
     cleanup_style_(kSimplify)
 {
     // Initialize the template matchers.

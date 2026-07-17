@@ -22,19 +22,20 @@ class SkeletonizerNode
   public:
     SkeletonizerNode(rclcpp::Node::SharedPtr node_ptr) :
         node_ptr_(node_ptr),
-        frame_id_("world"),
-        esdf_server_(node_ptr.get())
+        frame_id_("map_elevated"),
+        esdf_server_(node_ptr.get()),
+        min_separation_angle_(0.785f),
+        generate_by_layer_neighbors_(false),
+        num_neighbors_for_edge_(18),
+        min_gvd_distance_(0.4f),
+        update_esdf_(false),
+        vertex_distance_threshold_(0.8f)
     {
-        // skeleton_pub_ = nh_private_.advertise<pcl::PointCloud<pcl::PointXYZ>
-        // >(
-        //     "skeleton", 1, true);
-        // sparse_graph_pub_ =
-        // nh_private_.advertise<visualization_msgs::MarkerArray>(
-        //     "sparse_graph", 1, true);
         skeleton_pub_ =
             node_ptr_->create_publisher<sensor_msgs::msg::PointCloud2>(
                 std::string(node_ptr_->get_name()) + "/skeleton",
                 rclcpp::QoS(1).transient_local());
+
         sparse_graph_pub_ =
             node_ptr_->create_publisher<visualization_msgs::msg::MarkerArray>(
                 std::string(node_ptr_->get_name()) + "/sparse_graph",
@@ -42,11 +43,11 @@ class SkeletonizerNode
     }
 
     // Initialize the node.
-    // void read_params(rclcpp::Node::SharedPtr node_ptr);
-
     void init();
+
     // Update ESDF
     void updateEsdf();
+
     // Start skeleton generation
     void generateSkeleton();
 
@@ -56,8 +57,6 @@ class SkeletonizerNode
                      std::vector<float>  *distances);
 
   private:
-    // ros::NodeHandle nh_;
-    // ros::NodeHandle nh_private_;
     rclcpp::Node::SharedPtr node_ptr_;
 
     std::string frame_id_;
@@ -79,15 +78,11 @@ class SkeletonizerNode
     std::string input_filepath_, output_filepath_, sparse_graph_filepath_;
     float       vertex_distance_threshold_;
 
-    // ros::Timer esdf_update_timer_, skeleton_generator_timer_;
-    rclcpp::TimerBase::SharedPtr esdf_update_timer_;
     rclcpp::TimerBase::SharedPtr skeleton_generator_timer_;
 };
 
 void SkeletonizerNode::init()
 {
-    // skeleton_generator_timer_ = nh_.createTimer(
-    //     ros::Duration(5.0), &SkeletonizerNode::generateSkeleton, this);
     skeleton_generator_timer_ = node_ptr_->create_wall_timer(
         std::chrono::duration<double>(5.0),
         std::bind(&SkeletonizerNode::generateSkeleton, this));
@@ -220,9 +215,33 @@ void SkeletonizerNode::skeletonize(Layer<EsdfVoxel>    *esdf_layer,
 
     // Now visualize the graph.
     const SparseSkeletonGraph &graph = skeleton_generator.getSparseGraph();
+
+    std::vector<int64_t> vertexIds;
+    std::vector<int64_t> edgeIds;
+
+    graph.getAllVertexIds(&vertexIds);
+
+    graph.getAllEdgeIds(&edgeIds);
+
+    const std::size_t esdfBlockCount = esdf_layer->getNumberOfAllocatedBlocks();
+
+    RCLCPP_INFO(node_ptr_->get_logger(),
+                "Skeleton update: ESDF blocks=%zu, "
+                "dense edge points=%zu, "
+                "sparse vertices=%zu, "
+                "sparse edges=%zu, "
+                "min_gvd_distance=%.3f, "
+                "vertex_distance_threshold=%.3f.",
+                esdfBlockCount,
+                pointcloud->size(),
+                vertexIds.size(),
+                edgeIds.size(),
+                static_cast<double>(min_gvd_distance_),
+                static_cast<double>(vertex_distance_threshold_));
+
     visualization_msgs::msg::MarkerArray marker_array;
     visualizeSkeletonGraph(graph,
-                           "map_elevated",
+                           frame_id_,
                            &marker_array,
                            vertex_distance_threshold_);
     sparse_graph_pub_->publish(marker_array);

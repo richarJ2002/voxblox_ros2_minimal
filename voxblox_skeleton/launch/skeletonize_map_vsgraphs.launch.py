@@ -115,7 +115,7 @@ def generate_launch_description():
                 "update_esdf": True,
                 "esdf_min_diff_m": 0.0,
                 "tsdf_voxel_size": 0.2,
-                "min_gvd_distance": 0.5,
+                "min_gvd_distance": 0.2,
                 "esdf_max_distance_m": 5.0,
                 "publish_pointclouds": True,
                 "min_separation_angle": 0.78,  # 45 deg
